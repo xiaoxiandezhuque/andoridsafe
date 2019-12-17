@@ -58,7 +58,17 @@ void queryTracerPid(int myPid) {
 
 }
 
+jstring getStringFromJNI(JNIEnv *env, jclass) {
+
+    return env->NewStringUTF("hello  from  jni   is ");
+}
+
+static JNINativeMethod method[] = {
+        {"stringFromJNI", "()Ljava/lang/String;", (void *) getStringFromJNI}
+};
+
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
+
 
     LOGE("进入jni_onload");
     JNIEnv *env;
@@ -66,6 +76,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
         LOGE("cuowu?");
         return JNI_ERR;
     }
+
     LOGE("----begin-----");
 //    jclass clz = env->FindClass("com/xh/encodendk/util/JniHandler");
 //    LOGE("find  clz");
@@ -89,6 +100,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
 //    LOGE("app version %s", version);
 
 
+
     jclass appClz = env->FindClass("com/xh/encodendk/App");
     jfieldID contextField = env->GetStaticFieldID(appClz, "instance", "Lcom/xh/encodendk/App;");
 
@@ -104,10 +116,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
 
     if (strcmp(name, "com.xh.encodendk") != 0) {
         LOGE("pagName  check  error");
-        return JNI_ERR;
-    }
-
-    if (strcmp(name, "com.xh.encodendk111") != 0) {
         return JNI_ERR;
     }
 
@@ -139,7 +147,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
 //        LOGE("%s%s", temp.c_str(), "----");
     }
     myFile.close();
-    if (strcmp(temp.c_str(), "com.xh.encodendk222") != 0) {
+    if (strcmp(temp.c_str(), "com.xh.encodendk") != 0) {
         LOGE("pag  error");
         return JNI_ERR;
     }
@@ -147,32 +155,42 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
 //    开线程去获取TracerPid
 //    pthread_t pthread;
 //    pthread_create(&pthread, NULL, , &myPid);
-    thread task1(&queryTracerPid, myPid);
-    task1.detach();
+//    thread task1(&queryTracerPid, myPid);
+////    task1.detach();
     LOGE("-----end-------");
+
+    jclass encodeUtilClz = env->FindClass("com/xh/encodendk/util/EncodeUtil");
+    if (env->RegisterNatives(encodeUtilClz, method, sizeof(method) / sizeof(method[0])) < 0) {
+        return JNI_ERR;
+    }
+
+
     return JNI_VERSION_1_6;
 }
 
 
-extern "C" JNIEXPORT jstring JNICALL
-Java_com_xh_encodendk_util_EncodeUtil_stringFromJNI(
-        JNIEnv *env,
-        jobject /* this */) {
-
-    return env->NewStringUTF("hello from jni");
-}
 
 
-extern "C" JNIEXPORT void JNICALL
-Java_com_xh_encodendk_util_EncodeUtil_startTicks(
-        JNIEnv *env,
-        jobject /* this */) {
 
-}
+//extern "C" JNIEXPORT jstring JNICALL
+//Java_com_xh_encodendk_util_EncodeUtil_stringFromJNI(
+//        JNIEnv *env,
+//        jobject /* this */) {
+//
+//    return env->NewStringUTF("hello from jni");
+//}
 
-extern "C" JNIEXPORT void JNICALL
-Java_com_xh_encodendk_util_EncodeUtil_StopTicks(
-        JNIEnv *env,
-        jobject /* this */) {
 
-}
+//extern "C" JNIEXPORT void JNICALL
+//Java_com_xh_encodendk_util_EncodeUtil_startTicks(
+//        JNIEnv *env,
+//        jclass* clazz) {
+//
+//}
+//
+//extern "C" JNIEXPORT void JNICALL
+//Java_com_xh_encodendk_util_EncodeUtil_StopTicks(
+//        JNIEnv *env,
+//        jclass clazz) {
+//
+//}

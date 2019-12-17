@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utils.init(this)
@@ -36,12 +37,12 @@ class MainActivity : AppCompatActivity() {
         minute = second
         hour = minute
         (findViewById(R.id.hellojniMsg) as TextView).text = EncodeUtil.stringFromJNI()
-        EncodeUtil.startTicks()
+
     }
 
     public override fun onPause() {
         super.onPause()
-        EncodeUtil.StopTicks()
+
     }
 
     /*
@@ -66,5 +67,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    companion object{
+        init {
+            System.loadLibrary("two")
+            System.loadLibrary("myencode")
+
+        }
+    }
 
 }
